@@ -5,14 +5,14 @@
       <button *ngIf="editingId" type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit(empleadoForm)">Cancelar</button>
     </div>
     <form #empleadoForm="ngForm" (ngSubmit)="saveEmpleado(empleadoForm)">
-      <input class="form-control mb-2" name="firstName" required minlength="2" placeholder="Nombres" [(ngModel)]="empleadoService.selectedEmpleado.firstName">
-      <input class="form-control mb-2" name="lastName" required minlength="2" placeholder="Apellidos" [(ngModel)]="empleadoService.selectedEmpleado.lastName">
-      <input class="form-control mb-2" type="email" name="email" required placeholder="Correo" [(ngModel)]="empleadoService.selectedEmpleado.email">
-      <input class="form-control mb-2" name="documentId" required pattern="[0-9]{10}" placeholder="Cédula (10 dígitos)" [(ngModel)]="empleadoService.selectedEmpleado.documentId">
-      <input class="form-control mb-2" name="position" required minlength="2" placeholder="Cargo" [(ngModel)]="empleadoService.selectedEmpleado.position">
-      <input class="form-control mb-2" name="department" required minlength="2" placeholder="Departamento" [(ngModel)]="empleadoService.selectedEmpleado.department">
-      <input class="form-control mb-2" type="number" min="1" name="salary" required placeholder="Sueldo" [(ngModel)]="empleadoService.selectedEmpleado.salary">
-      <input class="form-control mb-3" type="date" name="hireDate" required [(ngModel)]="empleadoService.selectedEmpleado.hireDate">
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['firstName']" name="firstName" required minlength="2" placeholder="Nombres" [(ngModel)]="empleadoService.selectedEmpleado.firstName"><div class="invalid-feedback">{{ fieldErrors['firstName'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['lastName']" name="lastName" required minlength="2" placeholder="Apellidos" [(ngModel)]="empleadoService.selectedEmpleado.lastName"><div class="invalid-feedback">{{ fieldErrors['lastName'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['email']" type="email" name="email" required placeholder="Correo" [(ngModel)]="empleadoService.selectedEmpleado.email"><div class="invalid-feedback">{{ fieldErrors['email'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['documentId']" name="documentId" required pattern="[0-9]{10}" placeholder="Cédula (10 dígitos)" [(ngModel)]="empleadoService.selectedEmpleado.documentId"><div class="invalid-feedback">{{ fieldErrors['documentId'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['position']" name="position" required minlength="2" placeholder="Cargo" [(ngModel)]="empleadoService.selectedEmpleado.position"><div class="invalid-feedback">{{ fieldErrors['position'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['department']" name="department" required minlength="2" placeholder="Departamento" [(ngModel)]="empleadoService.selectedEmpleado.department"><div class="invalid-feedback">{{ fieldErrors['department'] }}</div></div>
+      <div class="mb-2"><input class="form-control" [class.is-invalid]="fieldErrors['salary']" type="number" min="1" name="salary" required placeholder="Sueldo" [(ngModel)]="empleadoService.selectedEmpleado.salary"><div class="invalid-feedback">{{ fieldErrors['salary'] }}</div></div>
+      <div class="mb-3"><input class="form-control" [class.is-invalid]="fieldErrors['hireDate']" type="date" name="hireDate" required [(ngModel)]="empleadoService.selectedEmpleado.hireDate"><div class="invalid-feedback">{{ fieldErrors['hireDate'] }}</div></div>
       <button class="btn btn-primary w-100" [disabled]="empleadoForm.invalid || saving">
         {{ saving ? 'Guardando...' : (editingId ? 'Guardar cambios' : 'Crear') }}
       </button>
