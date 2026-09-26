@@ -1,28 +1,28 @@
-import {Injectable } from '@angular/core'; 
-import {HttpClient} from '@angular/common/http'; 
-import { Empleado } from '../models/empleado';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ApiResponse, Empleado } from '../models/empleado';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
+export class EmpleadoService {
+  readonly apiUrl = environment.apiUrl;
+  empleados: Empleado[] = [];
+  selectedEmpleado: Empleado = this.emptyEmployee();
 
-export class EmpleadoService { 
+  constructor(private readonly http: HttpClient) {}
 
-  URL_API='http://localhost:3000/api/empleados'; 
- 
-  //URL_API='assets/json/empleado.json';
-
- // URL_API='https://jsonplaceholder.typicode.com/users';
-
-  empleados: Empleado[] = []; 
-  selectedEmpleado: Empleado={ nombre:'', cargo:'', departamento:'', sueldo:0 } 
-
-  constructor(private http: HttpClient) { 
-      console.log("El servicio está funcionando...");
-  } 
-  getEmpleados(){ 
-    return this.http.get<Empleado[]>(this.URL_API); 
-  
+  getEmpleados() {
+    return this.http.get<ApiResponse<Empleado[]>>(`${this.apiUrl}?page=1&limit=100`);
   }
-  createEmpleado(empleado:Empleado){ 
-    return this.http.post(this.URL_API,empleado); 
-  } 
+
+  createEmpleado(empleado: Empleado) {
+    return this.http.post<ApiResponse<Empleado>>(this.apiUrl, empleado);
+  }
+
+  emptyEmployee(): Empleado {
+    return {
+      firstName: '', lastName: '', email: '', documentId: '', position: '',
+      department: '', salary: 0, hireDate: new Date().toISOString().slice(0, 10),
+    };
+  }
 }

@@ -1,43 +1,25 @@
-<div class="row">
-    <div class="col-md-4">
-    <div class="card">
-    <div class="card-body">
-<h1>Registro de Nuevo Empleado</h1>
-        <form #empleadoForm="ngForm" (ngSubmit)="addEmpleado(empleadoForm)"> 
-           <div class="form-group"> 
-                <input type="text" class="form-control" name="nombre" placeholder="Ingrese su nombre" [(ngModel)]="empleadoService.selectedEmpleado.nombre"> 
-            </div> 
-            <div class="form-group"> <input type="text" name="cargo" class="form-control" placeholder="Ingrese su cargo" [(ngModel)]="empleadoService.selectedEmpleado.cargo"> 
-            </div> 
-            <div class="form-group"> <input type="text" name="departamento" class="form-control" placeholder="Ingrese su departamento" [(ngModel)]="empleadoService.selectedEmpleado.departamento"> 
-            </div> 
-            <div class="form-group"> <input type="number" name="sueldo" class="form-control" placeholder="Ingrese su sueldo" [(ngModel)]="empleadoService.selectedEmpleado.sueldo"> 
-            </div> 
-            <button class="btn btn-primary">Crear</button> 
-            <button class="btn btn-secondary">Eliminar</button> 
-        </form>
-    </div>
-    </div>
-    </div>
-    <div class="col-md-8">
-    <table class="table table-striped">
-    <thead>
-    <tr><th>Nombre</th>
-    <th>Cargo</th>
-    <th>Departamento</th>
-    <th>Operaciones</th></tr>
-    </thead>
-    <tbody>
-        <tbody>
-            <tr *ngFor="let empleado of empleadoService.empleados">
-            <td>{{empleado.nombre}}</td>
-            <td>{{empleado.cargo}}</td>
-            <td>{{empleado.departamento}}</td>
-            <td><button class="btn btn-secondary">Actualizar</button>
-            <button class="btn btn-danger">Eliminar</button>
-            </td>
-            </tr>
-        </tbody>
-    
-    </table>
-    </div>
+<div class="row g-4 p-3">
+  <div class="col-md-4"><div class="card"><div class="card-body">
+    <h1 class="h4">Nuevo empleado</h1>
+    <form #empleadoForm="ngForm" (ngSubmit)="addEmpleado(empleadoForm)">
+      <input class="form-control mb-2" name="firstName" required minlength="2" placeholder="Nombres" [(ngModel)]="empleadoService.selectedEmpleado.firstName">
+      <input class="form-control mb-2" name="lastName" required minlength="2" placeholder="Apellidos" [(ngModel)]="empleadoService.selectedEmpleado.lastName">
+      <input class="form-control mb-2" type="email" name="email" required placeholder="Correo" [(ngModel)]="empleadoService.selectedEmpleado.email">
+      <input class="form-control mb-2" name="documentId" required pattern="[0-9]{10}" placeholder="Cédula (10 dígitos)" [(ngModel)]="empleadoService.selectedEmpleado.documentId">
+      <input class="form-control mb-2" name="position" required minlength="2" placeholder="Cargo" [(ngModel)]="empleadoService.selectedEmpleado.position">
+      <input class="form-control mb-2" name="department" required minlength="2" placeholder="Departamento" [(ngModel)]="empleadoService.selectedEmpleado.department">
+      <input class="form-control mb-2" type="number" min="1" name="salary" required placeholder="Sueldo" [(ngModel)]="empleadoService.selectedEmpleado.salary">
+      <input class="form-control mb-3" type="date" name="hireDate" required [(ngModel)]="empleadoService.selectedEmpleado.hireDate">
+      <button class="btn btn-primary w-100" [disabled]="empleadoForm.invalid">Crear</button>
+    </form>
+    <p *ngIf="error" class="text-danger mt-3 mb-0">{{ error }}</p>
+  </div></div></div>
+  <div class="col-md-8">
+    <div class="d-flex justify-content-between align-items-center mb-2"><h2 class="h4 mb-0">Empleados</h2><button class="btn btn-outline-secondary btn-sm" (click)="getEmpleados()">Actualizar</button></div>
+    <p *ngIf="loading">Cargando...</p>
+    <div class="table-responsive" *ngIf="!loading"><table class="table table-striped align-middle">
+      <thead><tr><th>Nombre</th><th>Correo</th><th>Cargo</th><th>Departamento</th><th>Sueldo</th></tr></thead>
+      <tbody><tr *ngFor="let empleado of empleadoService.empleados"><td>{{ empleado.firstName }} {{ empleado.lastName }}</td><td>{{ empleado.email }}</td><td>{{ empleado.position }}</td><td>{{ empleado.department }}</td><td>{{ empleado.salary | currency:'USD' }}</td></tr></tbody>
+    </table></div>
+  </div>
+</div>

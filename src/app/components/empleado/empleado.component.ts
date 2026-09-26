@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { EmpleadoService } from '../../services/empleado.service';
-import { Empleado } from '../../models/empleado';
 import { NgForm } from '@angular/forms';
+import { EmpleadoService } from '../../services/empleado.service';
 
 @Component({
   selector: 'app-empleado',
@@ -9,26 +8,39 @@ import { NgForm } from '@angular/forms';
   styleUrl: './empleado.component.css'
 })
 export class EmpleadoComponent implements OnInit { 
-  constructor(public empleadoService:EmpleadoService) {
+  error = '';
+  loading = false;
 
-   } 
-   empleado: Empleado[] = []; 
-   ngOnInit(): void { 
-    this.getEmpleados(); 
-  } 
-  
-    getEmpleados() { 
-      this.empleadoService.getEmpleados().subscribe( res=>{ 
-        this.empleadoService.empleados=res; }, err=>console.error(err)
-        ); 
-      } 
-      
-    addEmpleado(form:NgForm){ 
-      this.empleadoService.createEmpleado(form.value).subscribe( 
-        res=>{ 
-          this.getEmpleados(); 
-          form.reset; }, 
-          err=>console.error(err) ); 
-        } 
-      }
+  constructor(public empleadoService: EmpleadoService) {}
+
+  ngOnInit(): void { this.getEmpleados(); }
+
+  getEmpleados(): void {
+    this.loading = true;
+    this.error = '';
+    this.empleadoService.getEmpleados().subscribe({
+      next: (response) => {
+        this.empleadoService.empleados = response.data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'No fue posible obtener los empleados desde la API.';
+        this.loading = false;
+      },
+    });
+  }
+
+  addEmpleado(form: NgForm): void {
+    if (form.invalid) return;
+    this.error = '';
+    this.empleadoService.createEmpleado(this.empleadoService.selectedEmpleado).subscribe({
+      next: () => {
+        form.resetForm();
+        this.empleadoService.selectedEmpleado = this.empleadoService.emptyEmployee();
+        this.getEmpleados();
+      },
+      error: (error) => this.error = error?.error?.message ?? 'No fue posible crear el empleado.',
+    });
+  }
+}
 

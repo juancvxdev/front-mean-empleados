@@ -1,19 +1,20 @@
-export interface Empleado { 
-    nombre: string 
-    cargo: string 
-    departamento: string 
-    sueldo: Number 
-    createdAt?:string 
-    updatedAt?: string 
-    _id?: string 
+export interface Empleado {
+  id?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  documentId: string;
+  position: string;
+  department: string;
+  salary: number;
+  hireDate: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
-/*
-export interface Empleado { 
-    name: string 
-    email: string 
-    website: string 
-    createdAt?:string 
-    updatedAt?: string 
-    _id?: string 
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  error: unknown;
 }
-*/
