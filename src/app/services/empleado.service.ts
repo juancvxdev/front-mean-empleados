@@ -19,6 +19,15 @@ export class EmpleadoService {
     return this.http.post<ApiResponse<Empleado>>(this.apiUrl, empleado);
   }
 
+  updateEmpleado(id: string, empleado: Empleado) {
+    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...data } = empleado;
+    return this.http.put<ApiResponse<Empleado>>(`${this.apiUrl}/${id}`, data);
+  }
+
+  deleteEmpleado(id: string) {
+    return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`);
+  }
+
   emptyEmployee(): Empleado {
     return {
       firstName: '', lastName: '', email: '', documentId: '', position: '',

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Empleado } from '../../models/empleado';
 import { EmpleadoService } from '../../services/empleado.service';
 
 @Component({
@@ -9,7 +10,11 @@ import { EmpleadoService } from '../../services/empleado.service';
 })
 export class EmpleadoComponent implements OnInit { 
   error = '';
+  success = '';
   loading = false;
+  saving = false;
+  deletingId: string | null = null;
+  editingId: string | null = null;
 
   constructor(public empleadoService: EmpleadoService) {}
 
@@ -30,16 +35,63 @@ export class EmpleadoComponent implements OnInit {
     });
   }
 
-  addEmpleado(form: NgForm): void {
+  saveEmpleado(form: NgForm): void {
     if (form.invalid) return;
     this.error = '';
-    this.empleadoService.createEmpleado(this.empleadoService.selectedEmpleado).subscribe({
+    this.success = '';
+    this.saving = true;
+    const isEditing = this.editingId !== null;
+    const request = isEditing
+      ? this.empleadoService.updateEmpleado(this.editingId!, this.empleadoService.selectedEmpleado)
+      : this.empleadoService.createEmpleado(this.empleadoService.selectedEmpleado);
+
+    request.subscribe({
       next: () => {
-        form.resetForm();
-        this.empleadoService.selectedEmpleado = this.empleadoService.emptyEmployee();
+        this.success = isEditing ? 'Empleado actualizado correctamente.' : 'Empleado creado correctamente.';
+        this.cancelEdit(form);
+        this.getEmpleados();
+        this.saving = false;
+      },
+      error: (error) => {
+        this.error = error?.error?.message ?? `No fue posible ${isEditing ? 'actualizar' : 'crear'} el empleado.`;
+        this.saving = false;
+      },
+    });
+  }
+
+  editEmpleado(empleado: Empleado, form: NgForm): void {
+    if (!empleado.id) return;
+    this.error = '';
+    this.success = '';
+    this.editingId = empleado.id;
+    this.empleadoService.selectedEmpleado = {
+      ...empleado,
+      hireDate: empleado.hireDate ? empleado.hireDate.slice(0, 10) : this.empleadoService.emptyEmployee().hireDate,
+    };
+    form.resetForm(this.empleadoService.selectedEmpleado);
+  }
+
+  cancelEdit(form: NgForm): void {
+    this.editingId = null;
+    this.empleadoService.selectedEmpleado = this.empleadoService.emptyEmployee();
+    form.resetForm(this.empleadoService.selectedEmpleado);
+  }
+
+  removeEmpleado(empleado: Empleado): void {
+    if (!empleado.id || !window.confirm(`¿Eliminar a ${empleado.firstName} ${empleado.lastName}?`)) return;
+    this.error = '';
+    this.success = '';
+    this.deletingId = empleado.id;
+    this.empleadoService.deleteEmpleado(empleado.id).subscribe({
+      next: () => {
+        this.success = 'Empleado eliminado correctamente.';
+        this.deletingId = null;
         this.getEmpleados();
       },
-      error: (error) => this.error = error?.error?.message ?? 'No fue posible crear el empleado.',
+      error: (error) => {
+        this.error = error?.error?.message ?? 'No fue posible eliminar el empleado.';
+        this.deletingId = null;
+      },
     });
   }
 }
