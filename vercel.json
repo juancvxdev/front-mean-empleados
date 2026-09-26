@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/frontend/browser"
+  "outputDirectory": "dist/frontend/browser",
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "http://52.87.111.51/api/v1/:path*"
+    }
+  ]
 }
